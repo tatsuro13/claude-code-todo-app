@@ -1,56 +1,55 @@
-import * as schema from "~/database/schema";
-
+import { useState, useMemo } from 'react';
 import type { Route } from "./+types/home";
-import { Welcome } from "../welcome/welcome";
+import { sampleTodos } from '~/data/sampleTodos';
+import { TodoHeader } from '~/components/todo/TodoHeader';
+import { TodoList } from '~/components/todo/TodoList';
+import { TodoFilters } from '~/components/todo/TodoFilters';
 
 export function meta({}: Route.MetaArgs) {
   return [
-    { title: "New React Router App" },
-    { name: "description", content: "Welcome to React Router!" },
+    { title: "Todo リスト - Modern Todo App" },
+    { name: "description", content: "シンプルで美しいTodo管理アプリ" },
   ];
 }
 
-export async function action({ request, context }: Route.ActionArgs) {
-  const formData = await request.formData();
-  let name = formData.get("name");
-  let email = formData.get("email");
-  if (typeof name !== "string" || typeof email !== "string") {
-    return { guestBookError: "Name and email are required" };
-  }
+export default function Home() {
+  const [filter, setFilter] = useState<'all' | 'active' | 'completed'>('all');
+  const [searchTerm, setSearchTerm] = useState('');
 
-  name = name.trim();
-  email = email.trim();
-  if (!name || !email) {
-    return { guestBookError: "Name and email are required" };
-  }
+  const filteredTodos = useMemo(() => {
+    let filtered = sampleTodos;
 
-  try {
-    await context.db.insert(schema.guestBook).values({ name, email });
-  } catch (error) {
-    return { guestBookError: "Error adding to guest book" };
-  }
-}
+    if (searchTerm) {
+      filtered = filtered.filter(todo => 
+        todo.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        todo.description?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        todo.tags.some(tag => tag.toLowerCase().includes(searchTerm.toLowerCase()))
+      );
+    }
 
-export async function loader({ context }: Route.LoaderArgs) {
-  const guestBook = await context.db.query.guestBook.findMany({
-    columns: {
-      id: true,
-      name: true,
-    },
-  });
+    return filtered;
+  }, [searchTerm]);
 
-  return {
-    guestBook,
-    message: context.cloudflare.env.VALUE_FROM_CLOUDFLARE,
-  };
-}
+  const completedCount = filteredTodos.filter(todo => todo.completed).length;
 
-export default function Home({ actionData, loaderData }: Route.ComponentProps) {
   return (
-    <Welcome
-      guestBook={loaderData.guestBook}
-      guestBookError={actionData?.guestBookError}
-      message={loaderData.message}
-    />
+    <div className="min-h-screen bg-gray-50">
+      <div className="max-w-4xl mx-auto px-4 py-8">
+        <TodoHeader 
+          totalCount={filteredTodos.length} 
+          completedCount={completedCount} 
+        />
+        <TodoFilters
+          currentFilter={filter}
+          onFilterChange={setFilter}
+          searchTerm={searchTerm}
+          onSearchChange={setSearchTerm}
+        />
+        <TodoList 
+          todos={filteredTodos} 
+          filter={filter}
+        />
+      </div>
+    </div>
   );
 }
