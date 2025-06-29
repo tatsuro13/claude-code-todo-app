@@ -1,3 +1,4 @@
+import React from 'react';
 import type { Todo } from '~/lib/types';
 
 interface TodoItemProps {
@@ -23,7 +24,7 @@ const priorityTextColors = {
   low: 'text-green-700',
 };
 
-export function TodoItem({ todo, onToggle }: TodoItemProps) {
+export const TodoItem = React.memo(function TodoItem({ todo, onToggle }: TodoItemProps) {
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);
     const now = new Date();
@@ -56,6 +57,7 @@ export function TodoItem({ todo, onToggle }: TodoItemProps) {
             checked={todo.completed}
             onChange={() => onToggle?.(todo.id)}
             className="h-5 w-5 text-blue-600 rounded focus:ring-blue-500 focus:ring-2"
+            aria-label={`${todo.title}を${todo.completed ? '未完了' : '完了'}としてマーク`}
           />
         </div>
         
@@ -110,4 +112,4 @@ export function TodoItem({ todo, onToggle }: TodoItemProps) {
       </div>
     </div>
   );
-}
+});

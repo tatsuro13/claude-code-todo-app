@@ -1,4 +1,4 @@
-import { useMemo } from 'react';
+import React, { useMemo } from 'react';
 import type { Todo } from '~/lib/types';
 import { TodoItem } from './TodoItem';
 
@@ -8,7 +8,7 @@ interface TodoListProps {
   onToggleTodo?: (id: number) => void;
 }
 
-export function TodoList({ todos, filter = 'all', onToggleTodo }: TodoListProps) {
+export const TodoList = React.memo(function TodoList({ todos, filter = 'all', onToggleTodo }: TodoListProps) {
   const filteredTodos = useMemo(() => {
     switch (filter) {
       case 'active':
@@ -58,14 +58,15 @@ export function TodoList({ todos, filter = 'all', onToggleTodo }: TodoListProps)
   }
 
   return (
-    <div className="space-y-3">
+    <div className="space-y-3" role="list" aria-label="Todoリスト">
       {sortedTodos.map(todo => (
-        <TodoItem 
-          key={todo.id} 
-          todo={todo} 
-          onToggle={onToggleTodo}
-        />
+        <div key={todo.id} role="listitem">
+          <TodoItem 
+            todo={todo} 
+            onToggle={onToggleTodo}
+          />
+        </div>
       ))}
     </div>
   );
-}
+});

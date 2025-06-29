@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import React, { useState } from 'react';
 
 interface TodoFiltersProps {
   currentFilter: 'all' | 'active' | 'completed';
@@ -7,7 +7,7 @@ interface TodoFiltersProps {
   onSearchChange: (searchTerm: string) => void;
 }
 
-export function TodoFilters({ 
+export const TodoFilters = React.memo(function TodoFilters({ 
   currentFilter, 
   onFilterChange, 
   searchTerm, 
@@ -36,6 +36,8 @@ export function TodoFilters({
                   : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
                 }
               `}
+              aria-pressed={currentFilter === option.value}
+              aria-label={`${option.label}Todoを表示`}
             >
               <span className="mr-2">{option.icon}</span>
               {option.label}
@@ -75,19 +77,25 @@ export function TodoFilters({
                 : 'border-gray-300 bg-white hover:border-gray-400'
               }
             `}
+            aria-label="Todoを検索"
+            aria-describedby="search-help"
           />
           {searchTerm && (
             <button
               onClick={() => onSearchChange('')}
               className="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 hover:text-gray-600"
+              aria-label="検索キーワードをクリア"
             >
-              <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
               </svg>
             </button>
           )}
         </div>
       </div>
+      <div id="search-help" className="sr-only">
+        Todoタイトルやタグで検索できます
+      </div>
     </div>
   );
-}
+});

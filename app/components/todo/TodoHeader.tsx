@@ -1,9 +1,11 @@
+import React from 'react';
+
 interface TodoHeaderProps {
   totalCount: number;
   completedCount: number;
 }
 
-export function TodoHeader({ totalCount, completedCount }: TodoHeaderProps) {
+export const TodoHeader = React.memo(function TodoHeader({ totalCount, completedCount }: TodoHeaderProps) {
   const completionPercentage = totalCount > 0 ? Math.round((completedCount / totalCount) * 100) : 0;
   
   return (
@@ -32,7 +34,7 @@ export function TodoHeader({ totalCount, completedCount }: TodoHeaderProps) {
           </span>
         </div>
         
-        <div className="w-full bg-gray-200 rounded-full h-3">
+        <div className="w-full bg-gray-200 rounded-full h-3" role="progressbar" aria-valuenow={completionPercentage} aria-valuemin={0} aria-valuemax={100} aria-label="Todoの進捗状況">
           <div 
             className="bg-blue-600 h-3 rounded-full transition-all duration-300 ease-in-out"
             style={{ width: `${completionPercentage}%` }}
@@ -46,4 +48,4 @@ export function TodoHeader({ totalCount, completedCount }: TodoHeaderProps) {
       </div>
     </header>
   );
-}
+});
