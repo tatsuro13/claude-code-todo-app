@@ -13,3 +13,5 @@
 # reviews
 /reviews/*
 !/reviews/.gitkeep
+
+.env

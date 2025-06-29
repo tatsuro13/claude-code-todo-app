@@ -10,7 +10,7 @@
     {
       "binding": "DB",
       "database_name": "todo-app-database",
-      "database_id": "REPLACE_WITH_ACTUAL_DATABASE_ID",
+      "database_id": "30930e86-e39b-4a95-ac60-cd5eda21a450",
       "migrations_dir": "drizzle"
     }
   ]
