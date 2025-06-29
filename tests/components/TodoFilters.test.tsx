@@ -76,7 +76,7 @@ describe('TodoFilters', () => {
   it('should show clear button when search term exists', () => {
     render(<TodoFilters {...defaultProps} searchTerm="テスト" />)
     
-    const clearButton = screen.getByRole('button', { name: '' })
+    const clearButton = screen.getByRole('button', { name: '検索キーワードをクリア' })
     expect(clearButton).toBeInTheDocument()
   })
 
@@ -97,7 +97,7 @@ describe('TodoFilters', () => {
     
     render(<TodoFilters {...defaultProps} searchTerm="テスト" onSearchChange={onSearchChange} />)
     
-    const clearButton = screen.getByRole('button', { name: '' })
+    const clearButton = screen.getByRole('button', { name: '検索キーワードをクリア' })
     await user.click(clearButton)
     
     expect(onSearchChange).toHaveBeenCalledWith('')
